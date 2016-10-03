@@ -25,9 +25,10 @@ class TcpMessage(object):
 class RawTCPLayer(Layer):
     chunk_size = 4096
 
-    def __init__(self, ctx, logging=True):
+    def __init__(self, ctx, logging=True, sni=None):
         self.logging = logging
         super(RawTCPLayer, self).__init__(ctx)
+        self.server_conn.sni = sni
 
     def __call__(self):
         self.connect()

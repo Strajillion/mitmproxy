@@ -56,6 +56,7 @@ class RootContext(object):
 
         # 1. check for --ignore
         if self.config.check_ignore:
+            sni = None
             ignore = self.config.check_ignore(top_layer.server_conn.address)
             if not ignore and client_tls:
                 try:
@@ -63,9 +64,10 @@ class RootContext(object):
                 except TlsProtocolException as e:
                     self.log("Cannot parse Client Hello: %s" % repr(e), "error")
                 else:
-                    ignore = self.config.check_ignore((client_hello.client_sni, 443))
+                    sni = client_hello.client_sni
+                    ignore = self.config.check_ignore((sni, 443))
             if ignore:
-                return RawTCPLayer(top_layer, logging=False)
+                return RawTCPLayer(top_layer, logging=False, sni=sni)
 
         # 2. Always insert a TLS layer, even if there's neither client nor server tls.
         # An inline script may upgrade from http to https,
