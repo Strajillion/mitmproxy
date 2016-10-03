@@ -124,7 +124,7 @@ class DumpMaster(flow.FlowMaster):
 
         scripts = options.scripts or []
         for command in scripts:
-            err = self.load_script(command, use_reloader=True)
+            err = self.load_script(command, use_reloader=False)
             if err:
                 raise DumpError(err)
 
