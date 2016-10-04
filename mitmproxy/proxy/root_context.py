@@ -58,14 +58,15 @@ class RootContext(object):
         if self.config.check_ignore:
             sni = None
             ignore = self.config.check_ignore(top_layer.server_conn.address)
-            if not ignore and client_tls:
+            if client_tls:
                 try:
                     client_hello = TlsClientHello.from_client_conn(self.client_conn)
                 except TlsProtocolException as e:
                     self.log("Cannot parse Client Hello: %s" % repr(e), "error")
                 else:
                     sni = client_hello.client_sni
-                    ignore = self.config.check_ignore((sni, 443))
+                    if not ignore:
+                        ignore = self.config.check_ignore((sni, 443))
             if ignore:
                 return RawTCPLayer(top_layer, logging=False, sni=sni)
 
