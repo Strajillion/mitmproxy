@@ -65,8 +65,7 @@ class RootContext(object):
                     self.log("Cannot parse Client Hello: %s" % repr(e), "error")
                 else:
                     sni = client_hello.client_sni
-                    if not ignore:
-                        ignore = self.config.check_ignore((sni, 443))
+                    ignore = self.config.check_ignore((sni, 443))
             if ignore:
                 return RawTCPLayer(top_layer, logging=False, sni=sni)
 
